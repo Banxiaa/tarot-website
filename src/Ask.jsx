@@ -27,7 +27,9 @@ export default function Ask({ question, setQuestion, onSuccess }) {
 
             clearTimeout(timer);
 
-            if(!res.ok) throw new Error(`HTTP ${res.status}`);
+            if(!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
             const data = await res.json();
             if(data?.error) {
                 alert(`后端返回错误：${data.error}`);
@@ -44,33 +46,38 @@ export default function Ask({ question, setQuestion, onSuccess }) {
     }
 
     return (
-    <div style={{
-        width: "100%", 
-        minWidth: "500px",
-        margin: "2rem auto",
-        padding: "1rem",
-        border: "1px solid #ccc",
-        borderRadius: 8,
-    }}>
+        <div style={{
+            width: "100%",          // 占屏幕宽度 90%
+            height: "90%",
+            maxWidth: "1200px",     // 桌面端最多 700px，不会无限放大
+            margin: "1rem auto",   // 上下留白，左右居中
+            padding: "1rem",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            boxSizing: "border-box"
+        }}>
+
         <h2>请输入你想要占卜的问题</h2>
 
-            <textarea
-                rows={8}
-                value={question}
-                onChange={(e) => setQuestion(cleanStrict(e.target.value))}
-                placeholder="请在 100 字以内描述你的问题, 例如：我最近运势如何？"
-                style={{
-                    width: "100%",
-                    padding: ".75rem",
-                    borderRadius: 6,
-                    border: `1px solid ${tooLong ? "#e00" : "#ccc"}`,
-                    outline: "none",
-                    boxSizing: "border-box",
-                    resize: "vertical",
-                    minHeight: "200px",
-                    maxHeight: "400px",
-                }}
-            />
+        <textarea
+            rows={8}
+            value={question}
+            onChange={(e) => setQuestion(cleanStrict(e.target.value))}
+            placeholder="请在 100 字以内描述你的问题, 例如：我最近运势如何？"
+            style={{
+                width: "100%",
+                padding: ".75rem",
+                fontSize: "16px",
+                borderRadius: 6,
+                border: `1px solid ${tooLong ? "#e00" : "#ccc"}`,
+                outline: "none",
+                boxSizing: "border-box",
+                resize: "vertical",
+                minHeight: "200px",
+                maxHeight: "400px",
+            }}
+        />
+
         <div style={{ marginTop: ".5rem", color: tooLong ? "#e00" : "#666" }}>
             当前字数：{unitCount} / {maxCount} {tooLong && "（超出上限）"}
         </div>
@@ -93,10 +100,6 @@ export default function Ask({ question, setQuestion, onSuccess }) {
 
     </div>
 
-    
-
-
-
     );
 }
 
@@ -104,8 +107,6 @@ export default function Ask({ question, setQuestion, onSuccess }) {
 
 function countUnits(text) {
     if (!text) return 0;
-
-
     const originalLength = text.length;
 
     // 中文字数

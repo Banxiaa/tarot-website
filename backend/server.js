@@ -11,7 +11,7 @@ app.post("/api/spread", (req, res) => {
   console.log("收到问题：", question);
 
   const response = {
-    description: "三张牌：过去 / 现在 / 未来",
+    description: "时间之流牌阵",
     count: 3,
     slots: [
       { name: "过去", meaning: "过往的影响" },

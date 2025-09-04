@@ -3,10 +3,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Intro from "./Intro";
 import Ask from "./Ask";
+import Spread from "./Spread";
 
 function App() {
     const [stage, setStage] = useState("intro");
     const [question, setQuestion] = useState("");
+	const [spread, setSpread] = useState(null);
+	const [chosenCards, setChosenCards] = useState([]);
     const { i18n } = useTranslation();
 
     // 切换语言函数
@@ -30,11 +33,16 @@ function App() {
 
 			{/* 🔹 根据阶段渲染不同内容 */}
 			{stage === "intro" && <Intro startApp={() => setStage("ask")} />}
-			{stage === "ask" && <Ask question={question} setQuestion={setQuestion} onSuccess={(spreadJson) => {
-				console.log("✅ 收到后端 JSON：", spreadJson);
+			{stage === "ask" && <Ask question={question} setQuestion={setQuestion} onSuccess={(spread) => {
+				console.log("✅ 收到后端 JSON：", spread);
+				setSpread(spread);
 				setStage("spread"); // 先切到下一阶段，暂时只是占位
 			}}/>}
-			{stage === "spread" && <div>Spread Stage</div>}
+			{stage === "spread" && <Spread spread={spread} question={question} chosenCards={chosenCards} setChosenCards={setChosenCards} onDone={() => {
+				console.log("完成spread抽取");
+				setStage("interpret");
+			}}/>}
+			{stage === "interpret" && <div>interpret stage</div>}
 
 		</div>
     );
