@@ -1,41 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import Intro from "./Intro";
+import Ask from "./Ask";
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [stage, setStage] = useState("intro");
-  let content;
-  if (stage === "intro"){
-    content = <Intro startApp={() => setStage("ask")}/>;
-  }
+    const [stage, setStage] = useState("intro");
+    const [question, setQuestion] = useState("");
+    const { i18n } = useTranslation();
 
-  return (
-    <>
-      {content}
-    </>
-  )
+    // 切换语言函数
+    const toggleLang = () => {
+      	i18n.changeLanguage(i18n.language === "zh" ? "en" : "zh");
+    };
+
+    return (
+		<div>
+			{/* 🔹 全局语言切换按钮 */}
+			<div style={{
+				position: "fixed",
+				top: "10px",
+				right: "10px",
+				zIndex: 1000
+			}}>
+			<button onClick={toggleLang}>
+				{i18n.language === "zh" ? "English" : "中文"}
+			</button>
+			</div>
+
+			{/* 🔹 根据阶段渲染不同内容 */}
+			{stage === "intro" && <Intro startApp={() => setStage("ask")} />}
+			{stage === "ask" && <Ask question={question} setQuestion={setQuestion} onSuccess={(spreadJson) => {
+				console.log("✅ 收到后端 JSON：", spreadJson);
+				setStage("spread"); // 先切到下一阶段，暂时只是占位
+			}}/>}
+			{stage === "spread" && <div>Spread Stage</div>}
+
+		</div>
+    );
 }
 
-export default App
-
-function Intro({startApp}){
-  return (<>
-          <div style={{ padding: "1em", border: "1px solid #ccc", marginBottom: "1em" }}>
-          <h2>⚠️ 使用说明与免责声明</h2>
-          <p>本应用仅供娱乐与个人兴趣参考，不具备专业占卜、心理咨询或医疗建议功能。</p>
-          <p>请勿将结果作为重大决策的唯一依据。</p>
-          <h3>使用流程</h3>
-          <ol>
-            <li>在输入框中填写你的问题（100字以内）。</li>
-            <li>提交后系统生成牌阵并展示牌位含义。</li>
-            <li>输入数字（1–78）抽取塔罗牌。</li>
-            <li>点击“查看解读”获得说明。</li>
-          </ol>
-          <h3>隐私与安全</h3>
-          <p>本应用不会存储、收集或分享任何用户输入的数据。</p>
-          <button onClick={startApp}>开始使用</button>
-        </div>
-  </>)
-}
+export default App;
